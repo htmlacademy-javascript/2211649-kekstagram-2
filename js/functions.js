@@ -35,3 +35,25 @@ const Kolo = function (string) {
     return +a;
   }
 };
+
+const timer = function (startDay, endDay, start, duration) {
+
+};
+
+const convertTimeToMinutes = (timeString) => {
+  const [hours, minutes] = timeString.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const isMeetingInWorkingHours = (workStart, workEnd, meetingStart, meetingDuration) => {
+  const workStartInMinutes = convertTimeToMinutes(workStart);
+  const workEndInMinutes = convertTimeToMinutes(workEnd);
+  const meetingStartInMinutes = convertTimeToMinutes(meetingStart);
+
+  const meetingEndInMinutes = meetingStartInMinutes + meetingDuration;
+
+  const isStartedOnTime = meetingStartInMinutes >= workStartInMinutes;
+  const isFinishedOnTime = meetingEndInMinutes <= workEndInMinutes;
+
+  return isStartedOnTime && isFinishedOnTime;
+};
