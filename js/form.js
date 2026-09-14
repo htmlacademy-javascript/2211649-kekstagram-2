@@ -1,3 +1,6 @@
+import {resetScale} from './scale.js';
+import {resetEffect} from './effects.js';
+
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 140;
@@ -79,6 +82,8 @@ function openUploadForm () {
 function closeUploadForm () {
   uploadFormElement.reset();
   pristine.reset();
+  resetScale();
+  resetEffect();
 
   uploadOverlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
