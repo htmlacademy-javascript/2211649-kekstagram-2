@@ -1,5 +1,7 @@
 import {resetScale} from './scale.js';
 import {resetEffect} from './effects.js';
+import {createSender} from './load.js';
+import {showSuccessMessage, showErrorMessage, isMessageShown} from './messages.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -12,11 +14,12 @@ const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overl
 const uploadCancelElement = uploadFormElement.querySelector('.img-upload__cancel');
 const hashtagsInputElement = uploadFormElement.querySelector('.text__hashtags');
 const commentInputElement = uploadFormElement.querySelector('.text__description');
+const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 
 const pristine = new Pristine(uploadFormElement, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-upload__error',
+  errorTextClass: 'img-upload__field-wrapper--error',
 });
 
 const getHashtagsList = (value) => value.trim().split(/\s+/).filter((tag) => tag.length > 0);
@@ -66,7 +69,7 @@ const isTextFieldFocused = () =>
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt) && !isTextFieldFocused()) {
+  if (isEscapeKey(evt) && !isTextFieldFocused() && !isMessageShown()) {
     evt.preventDefault();
     closeUploadForm();
   }
@@ -91,6 +94,27 @@ function closeUploadForm () {
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+};
+
+const onSendSuccess = () => {
+  unblockSubmitButton();
+  closeUploadForm();
+  showSuccessMessage();
+};
+
+const onSendError = () => {
+  unblockSubmitButton();
+  showErrorMessage();
+};
+
+const sendFormData = createSender(onSendSuccess, onSendError);
+
 uploadInputElement.addEventListener('change', () => {
   openUploadForm();
 });
@@ -100,7 +124,12 @@ uploadCancelElement.addEventListener('click', () => {
 });
 
 uploadFormElement.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
   if (!pristine.validate()) {
-    evt.preventDefault();
+    return;
   }
+
+  blockSubmitButton();
+  sendFormData(new FormData(uploadFormElement));
 });
