@@ -2,6 +2,7 @@ import {resetScale} from './scale.js';
 import {resetEffect} from './effects.js';
 import {createSender} from './load.js';
 import {showSuccessMessage, showErrorMessage, isMessageShown} from './messages.js';
+import {isValidFile, setPreview, resetPreview} from './preview.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -87,6 +88,7 @@ function closeUploadForm () {
   pristine.reset();
   resetScale();
   resetEffect();
+  resetPreview();
 
   uploadOverlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
@@ -116,6 +118,15 @@ const onSendError = () => {
 const sendFormData = createSender(onSendSuccess, onSendError);
 
 uploadInputElement.addEventListener('change', () => {
+  const file = uploadInputElement.files[0];
+
+  if (!file || !isValidFile(file)) {
+    uploadInputElement.value = '';
+    showErrorMessage();
+    return;
+  }
+
+  setPreview(file);
   openUploadForm();
 });
 
