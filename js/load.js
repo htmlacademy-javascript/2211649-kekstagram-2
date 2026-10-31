@@ -16,7 +16,7 @@ const createLoader = (onSuccess, onError) => () =>
     });
 
 const createSender = (onSuccess, onError) => (body) =>
-  fetch(BASE_URL, {
+  fetch(`${BASE_URL}/`, {
     method: 'POST',
     body,
   })

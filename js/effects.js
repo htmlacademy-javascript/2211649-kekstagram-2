@@ -71,7 +71,13 @@ noUiSlider.create(effectLevelSlider, {
   start: 100,
   step: 1,
   connect: 'lower',
+  format: {
+    to: (value) => Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1),
+    from: (value) => parseFloat(value),
+  },
 });
+
+imageEffectLevel.classList.add('hidden');
 
 effectLevelSlider.noUiSlider.on('update', (values, handle) => {
   const value = values[handle];
