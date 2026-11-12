@@ -3,7 +3,7 @@ const FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 const previewImageElement = document.querySelector('.img-upload__preview img');
 const effectsPreviewElements = document.querySelectorAll('.effects__preview');
 
-const DEFAULT_PREVIEW_SRC = previewImageElement.getAttribute('src');
+const defaultPreviewSrc = previewImageElement.getAttribute('src');
 
 let currentUrl = null;
 
@@ -25,17 +25,17 @@ const setPreview = (file) => {
   currentUrl = URL.createObjectURL(file);
 
   previewImageElement.src = currentUrl;
-  effectsPreviewElements.forEach((element) => {
-    element.style.backgroundImage = `url('${currentUrl}')`;
+  effectsPreviewElements.forEach((effectPreviewElement) => {
+    effectPreviewElement.style.backgroundImage = `url('${currentUrl}')`;
   });
 };
 
 const resetPreview = () => {
   revokeCurrentUrl();
 
-  previewImageElement.src = DEFAULT_PREVIEW_SRC;
-  effectsPreviewElements.forEach((element) => {
-    element.style.backgroundImage = '';
+  previewImageElement.src = defaultPreviewSrc;
+  effectsPreviewElements.forEach((effectPreviewElement) => {
+    effectPreviewElement.style.backgroundImage = '';
   });
 };
 

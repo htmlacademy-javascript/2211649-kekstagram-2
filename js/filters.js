@@ -5,7 +5,7 @@ const RANDOM_PHOTOS_COUNT = 10;
 const RERENDER_DELAY = 500;
 const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
 
-const Filter = {
+const FILTER = {
   DEFAULT: 'filter-default',
   RANDOM: 'filter-random',
   DISCUSSED: 'filter-discussed',
@@ -14,7 +14,7 @@ const Filter = {
 const filtersElement = document.querySelector('.img-filters');
 const filtersFormElement = filtersElement.querySelector('.img-filters__form');
 
-let currentFilter = Filter.DEFAULT;
+let currentFilter = FILTER.DEFAULT;
 let photos = [];
 
 const getRandomPhotos = () => {
@@ -34,9 +34,9 @@ const getDiscussedPhotos = () =>
 
 const getFilteredPhotos = () => {
   switch (currentFilter) {
-    case Filter.RANDOM:
+    case FILTER.RANDOM:
       return getRandomPhotos();
-    case Filter.DISCUSSED:
+    case FILTER.DISCUSSED:
       return getDiscussedPhotos();
     default:
       return [...photos];
@@ -51,16 +51,16 @@ const renderFilteredPhotos = () => {
 const debouncedRender = debounce(renderFilteredPhotos, RERENDER_DELAY);
 
 const onFiltersFormClick = (evt) => {
-  const button = evt.target.closest('.img-filters__button');
+  const buttonElement = evt.target.closest('.img-filters__button');
 
-  if (!button || button.id === currentFilter) {
+  if (!buttonElement || buttonElement.id === currentFilter) {
     return;
   }
 
   filtersFormElement.querySelector(`.${ACTIVE_BUTTON_CLASS}`).classList.remove(ACTIVE_BUTTON_CLASS);
-  button.classList.add(ACTIVE_BUTTON_CLASS);
+  buttonElement.classList.add(ACTIVE_BUTTON_CLASS);
 
-  currentFilter = button.id;
+  currentFilter = buttonElement.id;
   debouncedRender();
 };
 

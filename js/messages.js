@@ -1,8 +1,8 @@
+import {isEscapeKey} from './util.js';
+
 const DATA_ERROR_SHOW_TIME = 5000;
 
-let currentMessage = null;
-
-const isEscapeKey = (evt) => evt.key === 'Escape';
+let currentMessageElement = null;
 
 const getTemplateElement = (name) =>
   document.querySelector(`#${name}`).content.querySelector(`.${name}`).cloneNode(true);
@@ -24,12 +24,12 @@ const onMessageKeydown = (evt) => {
 };
 
 function closeMessage () {
-  if (!currentMessage) {
+  if (!currentMessageElement) {
     return;
   }
 
-  currentMessage.remove();
-  currentMessage = null;
+  currentMessageElement.remove();
+  currentMessageElement = null;
   document.removeEventListener('keydown', onMessageKeydown);
 }
 
@@ -47,12 +47,12 @@ const showMessage = (name) => {
   });
 
   document.body.append(messageElement);
-  currentMessage = messageElement;
+  currentMessageElement = messageElement;
   document.addEventListener('keydown', onMessageKeydown);
 };
 
 const showSuccessMessage = () => showMessage('success');
 const showErrorMessage = () => showMessage('error');
-const isMessageShown = () => currentMessage !== null;
+const isMessageShown = () => currentMessageElement !== null;
 
 export {showDataError, showSuccessMessage, showErrorMessage, isMessageShown};

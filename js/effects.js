@@ -1,9 +1,3 @@
-const effectsList = document.querySelector('.effects__list');
-const imageEffectLevel = document.querySelector('.img-upload__effect-level');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const previewImage = document.querySelector('.img-upload__preview img');
-
 const EFFECT_NONE = 'none';
 
 const EFFECTS = {
@@ -51,25 +45,28 @@ const EFFECTS = {
   },
 };
 
+const effectsListElement = document.querySelector('.effects__list');
+const effectLevelElement = document.querySelector('.img-upload__effect-level');
+const effectLevelSliderElement = document.querySelector('.effect-level__slider');
+const effectLevelValueElement = document.querySelector('.effect-level__value');
+const previewImageElement = document.querySelector('.img-upload__preview img');
+
 let currentEffect = EFFECT_NONE;
 
-const updateImageFilter = function (value) {
+const updateImageFilter = (value) => {
   const effect = EFFECTS[currentEffect];
 
   if (effect.filter === null) {
-    previewImage.style.filter = '';
+    previewImageElement.style.filter = '';
   } else {
-    previewImage.style.filter = `${effect.filter }(${value}${effect.unit})`;
+    previewImageElement.style.filter = `${effect.filter}(${value}${effect.unit})`;
   }
 };
 
-noUiSlider.create(effectLevelSlider, {
-  range: {
-    min: 0,
-    max: 100,
-  },
-  start: 100,
-  step: 1,
+noUiSlider.create(effectLevelSliderElement, {
+  range: EFFECTS[EFFECT_NONE].range,
+  start: EFFECTS[EFFECT_NONE].start,
+  step: EFFECTS[EFFECT_NONE].step,
   connect: 'lower',
   format: {
     to: (value) => Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1),
@@ -77,25 +74,25 @@ noUiSlider.create(effectLevelSlider, {
   },
 });
 
-imageEffectLevel.classList.add('hidden');
+effectLevelElement.classList.add('hidden');
 
-effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+effectLevelSliderElement.noUiSlider.on('update', (values, handle) => {
   const value = values[handle];
-  effectLevelValue.value = value;
+  effectLevelValueElement.value = value;
   updateImageFilter(value);
 });
 
-const updateSliderForEffect = function (effectName) {
+const updateSliderForEffect = (effectName) => {
   const effect = EFFECTS[effectName];
 
-  effectLevelSlider.noUiSlider.updateOptions({
+  effectLevelSliderElement.noUiSlider.updateOptions({
     range: effect.range,
     start: effect.start,
     step: effect.step,
   });
 };
 
-const onEffectsListChange = function (evt) {
+const onEffectsListChange = (evt) => {
   if (!evt.target.matches('input[type="radio"]')) {
     return;
   }
@@ -103,19 +100,19 @@ const onEffectsListChange = function (evt) {
   currentEffect = evt.target.value;
 
   if (currentEffect === EFFECT_NONE) {
-    imageEffectLevel.classList.add('hidden');
+    effectLevelElement.classList.add('hidden');
   } else {
-    imageEffectLevel.classList.remove('hidden');
+    effectLevelElement.classList.remove('hidden');
   }
 
   updateSliderForEffect(currentEffect);
 };
 
-effectsList.onchange = onEffectsListChange;
+effectsListElement.addEventListener('change', onEffectsListChange);
 
-const resetEffect = function () {
+const resetEffect = () => {
   currentEffect = EFFECT_NONE;
-  imageEffectLevel.classList.add('hidden');
+  effectLevelElement.classList.add('hidden');
   updateSliderForEffect(EFFECT_NONE);
 };
 

@@ -3,6 +3,7 @@ import {resetEffect} from './effects.js';
 import {createSender} from './load.js';
 import {showSuccessMessage, showErrorMessage, isMessageShown} from './messages.js';
 import {isValidFile, setPreview, resetPreview} from './preview.js';
+import {isEscapeKey} from './util.js';
 
 const MAX_HASHTAGS_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -67,8 +68,6 @@ pristine.addValidator(
 const isTextFieldFocused = () =>
   document.activeElement === hashtagsInputElement || document.activeElement === commentInputElement;
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
-
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt) && !isTextFieldFocused() && !isMessageShown()) {
     evt.preventDefault();
@@ -76,12 +75,12 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
-function openUploadForm () {
+const openUploadForm = () => {
   uploadOverlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
-}
+};
 
 function closeUploadForm () {
   uploadFormElement.reset();
@@ -96,22 +95,18 @@ function closeUploadForm () {
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
-const blockSubmitButton = () => {
-  submitButtonElement.disabled = true;
-};
-
-const unblockSubmitButton = () => {
-  submitButtonElement.disabled = false;
+const setSubmitButtonDisabled = (isDisabled) => {
+  submitButtonElement.disabled = isDisabled;
 };
 
 const onSendSuccess = () => {
-  unblockSubmitButton();
+  setSubmitButtonDisabled(false);
   closeUploadForm();
   showSuccessMessage();
 };
 
 const onSendError = () => {
-  unblockSubmitButton();
+  setSubmitButtonDisabled(false);
   showErrorMessage();
 };
 
@@ -141,6 +136,6 @@ uploadFormElement.addEventListener('submit', (evt) => {
     return;
   }
 
-  blockSubmitButton();
+  setSubmitButtonDisabled(true);
   sendFormData(new FormData(uploadFormElement));
 });
